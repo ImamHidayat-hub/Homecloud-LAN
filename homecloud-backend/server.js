@@ -238,6 +238,39 @@ app.get('/download/:id', satpamTiket, (req, res) => {
     });
 });
 
+// ==========================================
+// ENDPOINT 6: DELETE FILE FISIK & DATABASE
+// ==========================================
+const fs = require('fs'); // Panggil alat pembantu buat ngotak-ngatik file fisik
+
+app.delete('/delete/:id', satpamTiket, (req, res) => {
+    const idFile = req.params.id;
+    const idUser = req.user.id;
+
+    // 1. Cari dulu letak file fisiknya di database
+    const querySelect = 'SELECT filepath FROM files WHERE id = ? AND user_id = ?';
+    db.query(querySelect, [idFile, idUser], (err, results) => {
+        if (err) return res.status(500).json({ message: "Database ngereog" });
+        if (results.length === 0) return res.status(404).json({ message: "File kagak ada Lerr!" });
+
+        // 2. Kalo ketemu, hapus file fisiknya dari folder 'uploads'
+        const lokasiFile = path.join(__dirname, results[0].filepath);
+        try {
+            if (fs.existsSync(lokasiFile)) fs.unlinkSync(lokasiFile); // Bakar filenya!
+        } catch (error) {
+            console.log("Gagal hapus file fisik:", error);
+        }
+
+        // 3. Kalo file fisik udah angus, hapus catatannya dari MySQL
+        const queryDelete = 'DELETE FROM files WHERE id = ? AND user_id = ?';
+        db.query(queryDelete, [idFile, idUser], (err, result) => {
+            if (err) return res.status(500).json({ message: "Gagal hapus dari DB" });
+            res.status(200).json({ message: "Sujud Syukur! File berhasil dibasmi!" });
+        });
+    });
+});
+
+
 // 6. Bikin rute API (endpoint) buat ngetes
 app.get('/', (req, res) => {
     res.send('Mantap! Mesin Backend HomeCloud udah nyala nih!');

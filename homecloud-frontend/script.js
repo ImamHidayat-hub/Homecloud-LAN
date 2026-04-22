@@ -37,7 +37,7 @@ document.getElementById('toggleBtn').addEventListener('click', switchMode);
 
 // Aksi pas tombol Login/Register dipencet
 authForm.addEventListener('submit', async (e) => {
-    e.preventDefault(); // Biar browser ga refresh (TANDA TANYA ? GA BAKAL MUNCUL LAGI)
+    e.preventDefault(); // Biar browser ga refresh
 
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
@@ -58,18 +58,46 @@ authForm.addEventListener('submit', async (e) => {
             if (isLoginMode) {
                 // Simpen tiket ke brankas browser
                 localStorage.setItem('token', data.token);
-                alert("Sujud Syukur Abangku! Login Sukses!");
-                // Langsung terbang ke Dashboard
-                window.location.href = 'dashboard.html';
+                
+                // POP-UP LOGIN SUKSES (Pake Animasi Centang)
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sujud Syukur Abangku!',
+                    text: 'Login Sukses!',
+                    showConfirmButton: false,
+                    timer: 1500 // Nunggu 1.5 detik baru pindah
+                }).then(() => {
+                    window.location.href = 'dashboard.html';
+                });
+                
             } else {
-                alert("Sujud Syukur! Akun jadi. Sekarang Login ya Lerr!");
-                switchMode(); // Pindah ke form login otomatis
+                // POP-UP REGISTER SUKSES
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Mantap Lerr!',
+                    text: 'Akun berhasil dibuat. Sekarang silakan Login!',
+                    confirmButtonColor: '#4f46e5'
+                }).then(() => {
+                    switchMode(); // Pindah ke form login otomatis abis diklik OK
+                });
             }
         } else {
-            alert("Yah gagal: " + data.message);
+            // POP-UP GAGAL (Password Salah / Akun Udah Ada)
+            Swal.fire({
+                icon: 'error',
+                title: 'Yah gagal Lerr...',
+                text: data.message,
+                confirmButtonColor: '#4f46e5'
+            });
         }
     } catch (error) {
-        alert("Server backend mati Lerr! Pastiin node server.js udah jalan di terminal!");
+        // POP-UP SERVER MATI
+        Swal.fire({
+            icon: 'warning',
+            title: 'Waduh!',
+            text: 'Server backend mati Lerr! Pastiin node server.js udah jalan.',
+            confirmButtonColor: '#4f46e5'
+        });
         console.error(error);
     }
 });
