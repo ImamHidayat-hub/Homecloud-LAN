@@ -1,6 +1,6 @@
 // Ganti IP ini pake IP PC Ubuntu lu (misal: http://10.18.124.23:3000) 
 // Kalo lu ngetes di PC yang sama, pake localhost gapapa.
-const API_URL = 'http://localhost:3000'; 
+const API_URL = 'http://10.18.124.23:3000'; 
 
 let isLoginMode = true; // Mode default = Login
 

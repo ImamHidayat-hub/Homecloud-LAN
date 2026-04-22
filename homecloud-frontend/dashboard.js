@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000';
+const API_URL = 'http://10.18.124.23:3000';
 const token = localStorage.getItem('token');
 
 // Kalo ga ada tiket, tendang ke login!
